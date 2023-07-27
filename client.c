@@ -44,6 +44,7 @@ int main(int argc, char **argv)
 		send_char_as_signal(server_pid, string_to_send[i]);
 		i++;
 	}
+	send_char_as_signal(server_pid, '\0');
 
 	return 0;
 }
