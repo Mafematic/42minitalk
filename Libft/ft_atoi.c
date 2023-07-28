@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "serverclient.h"
+#include "libft.h"
 
 static int	ft_iswhitespace(char c)
 {
