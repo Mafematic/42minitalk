@@ -29,4 +29,7 @@ typedef struct s_server_state
 	int				buffer_index;
 }	t_server_state;
 
+void	sigusr_handler(int signum);
+void	send_char_as_signal(int pid, char c);
+
 #endif
