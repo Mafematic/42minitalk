@@ -12,10 +12,10 @@
 
 #include "serverclient.h"
 
-void send_char_as_signal(int pid, char c)
+void	send_char_as_signal(int pid, char c)
 {
-	int ascii_value;
-	int i;
+	int	ascii_value;
+	int	i;
 
 	ascii_value = (int)c;
 	i = 0;
@@ -30,37 +30,31 @@ void send_char_as_signal(int pid, char c)
 	}
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
+	pid_t	server_pid;
+	char	*string_to_send;
+	int		i;
+
 	if (argc != 3)
 	{
 		write(1, "Wrong amount of parameters", 26);
-		return 1;
+		return (1);
 	}
-
-	pid_t server_pid = ft_atoi(argv[1]);
-	if (server_pid == 0)
-	{
-		write(1, "Wrong Server ID\n", 16);
-		return 1;
-	}
-	else 
-	{
-		write(1, "Server PID: ", 12);
-		ft_putnbr_fd(server_pid, 1);
-		write(1, "\n", 1);
-	}
-
-	char *string_to_send = argv[2];
-	printf("String: %s\n", string_to_send);
-
-	int i = 0;
+	server_pid = ft_atoi(argv[1]);
+	write(1, "Server PID: ", 12);
+	ft_putnbr_fd(server_pid, 1);
+	write(1, "\n", 1);
+	string_to_send = argv[2];
+	write(1, "String: ", 8);
+	ft_putstr_fd(string_to_send, 1);
+	write(1, "\n", 1);
+	i = 0;
 	while (string_to_send[i] != '\0')
 	{
 		send_char_as_signal(server_pid, string_to_send[i]);
 		i++;
 	}
 	send_char_as_signal(server_pid, '\0');
-
-	return 0;
+	return (0);
 }

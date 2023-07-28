@@ -17,5 +17,16 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <signal.h>
+# include <sys/types.h>
+
+# define BUFFER_SIZE 1024
+
+typedef struct s_server_state
+{
+	int				bit_count;
+	unsigned char	received_char;
+	char			buffer[BUFFER_SIZE];
+	int				buffer_index;
+}	t_server_state;
 
 #endif
