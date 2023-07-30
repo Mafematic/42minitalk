@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERCLIENT_H
-# define SERVERCLIENT_H
+#ifndef SERVERCLIENT_BONUS_H
+# define SERVERCLIENT_BONUS_H
 
 # include "../Libft/libft.h"
 # include <unistd.h>
@@ -30,7 +30,12 @@ typedef struct s_server_state
 	pid_t			client_pid;
 }	t_server_state;
 
+void	ack_handler(int signum);
 void	sigusr_handler(int signum);
 void	send_char_as_signal(int pid, char c);
+void	print_pid_and_string(pid_t server_pid, char *string_to_send);
+void	send_signals(pid_t server_pid, char *string_to_send);
+void	send_pid_as_signal(pid_t server_pid, pid_t client_pid);
+int		setup_signals(void);
 
 #endif
