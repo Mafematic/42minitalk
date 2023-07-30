@@ -14,6 +14,45 @@
 
 t_server_state	g_server = {0, 0, {0}, 0, 0};
 
+void	handle_client_logic(void)
+{
+	g_server.buffer[g_server.buffer_index++] = g_server.received_char;
+	if (g_server.received_char == '\0')
+	{
+		ft_putstr_fd(g_server.buffer, 1);
+		write(1, "\n", 1);
+		if (kill(g_server.client_pid, SIGUSR1) == -1)
+			write(1, "Failed to send acknowledgement/n", 31);
+		else
+			write(1, "Acknowledgement signal sent successfully.\n", 42);
+		g_server.buffer_index = 0;
+		g_server.client_pid = 0;
+	}
+}
+
+void	handle_non_bit_related_logic(void)
+{
+	if (g_server.bit_count == 8)
+	{
+		if (g_server.client_pid == 0)
+		{
+			if (g_server.received_char != '\0')
+				g_server.buffer[g_server.buffer_index++] \
+				= g_server.received_char;
+			else
+			{
+				g_server.client_pid = ft_atoi(g_server.buffer);
+				g_server.buffer_index = 0;
+			}
+		}
+		else
+		{
+			handle_client_logic();
+		}
+		g_server.bit_count = 0;
+	}
+}
+
 void	sigusr_handler(int signum)
 {
 	if (signum != SIGUSR1 && signum != SIGUSR2)
@@ -29,41 +68,7 @@ void	sigusr_handler(int signum)
 			g_server.received_char |= (1 << g_server.bit_count);
 		g_server.bit_count++;
 	}
-	if (g_server.bit_count == 8)
-	{
-		if (g_server.client_pid == 0)
-		{
-			if (g_server.received_char != '\0')
-			{
-				g_server.buffer[g_server.buffer_index++] = g_server.received_char;
-			}
-			else
-    		{
-        		g_server.client_pid = ft_atoi(g_server.buffer);
-        		g_server.buffer_index = 0;
-    		}
-		}
-		else
-		{
-			g_server.buffer[g_server.buffer_index++] = g_server.received_char;
-			if (g_server.received_char == '\0')
-			{
-				ft_putstr_fd(g_server.buffer, 1);
-				write(1, "\n", 1);
-				if (kill(g_server.client_pid, SIGUSR1) == -1) 
-				{
-					perror("Failed to send acknowledgement");
-				} 
-				else 
-				{
-					printf("Acknowledgement signal sent successfully.\n");
-				}
-				g_server.buffer_index = 0;
-				g_server.client_pid = 0;
-			}
-		}
-		g_server.bit_count = 0;
-	}
+	handle_non_bit_related_logic();
 }
 
 int	main(void)
